@@ -1,0 +1,26 @@
+services:
+  preprocess:
+    build:
+      context: ./preprocess
+    volumes:
+      - ./data:/data
+    command: python handler.py
+
+  train:
+    build:
+      context: ./train
+    volumes:
+      - ./data:/data
+    depends_on:
+      - preprocess
+    command: python handler.py
+
+  web:
+    build:
+      context: ./web
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/data   # così può leggere il modello salvato
+    depends_on:
+      - train

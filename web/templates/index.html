@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Car Evaluation Demo</title>
+</head>
+<body>
+  <h1>Car Evaluation Prediction</h1>
+  <form method="POST">
+    Buying: <input type="text" name="buying"><br>
+    Maintenance: <input type="text" name="maint"><br>
+    Doors: <input type="text" name="doors"><br>
+    Persons: <input type="text" name="persons"><br>
+    Luggage Boot: <input type="text" name="lug_boot"><br>
+    Safety: <input type="text" name="safety"><br>
+    <input type="submit" value="Predict">
+  </form>
+
+  {% if prediction %}
+    <h2>Prediction: {{ prediction }}</h2>
+  {% endif %}
+</body>
+</html>
