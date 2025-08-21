@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h2>Benvenuto {{ current_user.username }}</h2>
+    <p><a href="{{ url_for('auth.logout') }}">Logout</a></p>
+
+    <h3>Effettua una predizione</h3>
+    <form method="POST" action="{{ url_for('routes.predict') }}">
+        <input name="buying" placeholder="buying">
+        <input name="maint" placeholder="maint">
+        <input name="doors" placeholder="doors">
+        <input name="persons" placeholder="persons">
+        <input name="lug_boot" placeholder="lug_boot">
+        <input name="safety" placeholder="safety">
+        <button type="submit">Predici</button>
+    </form>
+
+    <h3>Le tue predizioni:</h3>
+    <ul>
+        {% for p in predictions %}
+            <li>{{ p.input_data }} → {{ p.prediction }} ({{ p.timestamp }})</li>
+        {% endfor %}
+    </ul>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+            {% for category, message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>

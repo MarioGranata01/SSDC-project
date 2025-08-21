@@ -1,35 +1,45 @@
-import joblib
-import pandas as pd
-from flask import Flask, request, render_template
+import os, joblib
+from flask import Flask, render_template, request, flash, redirect, url_for
+from flask_login import LoginManager, current_user
+from models import db, create_admin
+from auth import auth
+from routes import routes
 
 app = Flask(__name__)
+app.secret_key = "supersecret"
 
-# Carica modello e encoder numerico
-model = joblib.load("/data/models/model.joblib")
-encoders = joblib.load("/data/encoders/car.data_encoders.joblib")
+# Database
+basedir = os.path.abspath(os.path.dirname(__file__))
+db_path = os.path.join(basedir, "database", "database.db")
+app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# Inverti la mappatura della colonna target
-inv_target_map = {v: k for k, v in encoders['class'].items()}
+# Inizializza DB
+db.init_app(app)
+with app.app_context():
+    db.create_all()
+    create_admin(app)
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    prediction = None
-    if request.method == "POST":
-        # Leggi input form come lista di valori
-        input_values = [request.form.get(f) for f in ['buying','maint','doors','persons','lug_boot','safety']]
-        
-        # Trasforma input in codici numerici coerenti con gli encoder
-        df = pd.DataFrame([input_values], columns=['buying','maint','doors','persons','lug_boot','safety'])
-        for col in df.columns:
-            df[col] = pd.Categorical(df[col], categories=list(encoders[col].keys())).codes
+# Login manager
+login_manager = LoginManager()
+login_manager.login_view = "auth.login"
+login_manager.init_app(app)
 
-        # Predizione
-        pred_code = model.predict(df)[0]
+from models import User
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
-        # Decodifica predizione in label originale
-        prediction = inv_target_map[pred_code]
+# Blueprint
+app.register_blueprint(auth, url_prefix="/")
+app.register_blueprint(routes, url_prefix="/")
 
-    return render_template("index.html", prediction=prediction)
+# Home
+@app.route("/")
+def home():
+    if current_user.is_authenticated:
+        return redirect("/dashboard")
+    return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

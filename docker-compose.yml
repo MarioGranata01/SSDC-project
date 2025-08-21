@@ -21,6 +21,10 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./data:/data   # così può leggere il modello salvato
+      - ./web/database:/data/database
+      - ./data/models:/data/models
+      - ./data/encoders:/data/encoders
+      - ./data/raw:/data/raw
+      - ./data/processed:/data/processed
     depends_on:
       - train

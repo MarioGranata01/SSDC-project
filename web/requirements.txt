@@ -1,4 +1,6 @@
 flask
-scikit-learn
+flask-login
+flask-sqlalchemy
 joblib
+scikit-learn
 pandas
