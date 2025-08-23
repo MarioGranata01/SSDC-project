@@ -1,33 +1,184 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
+    <meta charset="UTF-8">
     <title>Admin Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap');
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #0a0a0a;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 2rem 0;
+            border-bottom: 1px solid #333;
+            position: relative;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+
+        h2 { color: #fff; font-weight: 300; font-size: 2.8rem; margin: 0; text-align: center; letter-spacing: -0.5px; }
+
+        .subtitle { text-align: center; color: #d4af37; font-weight: 300; font-size: 1.1rem; margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 2px; }
+
+        .logout-container { position: absolute; top: 2rem; right: 2rem; }
+
+        a { color: #ccc; text-decoration: none; font-weight: 400; padding: 12px 24px; border: 1px solid #444; transition: all 0.3s ease; display: inline-block; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; }
+        a:hover { background: #fff; color: #000; border-color: #fff; }
+
+        .main-content { padding: 3rem 0; }
+
+        .card { background: #1a1a1a; border: 1px solid #333; padding: 3rem; margin: 2rem 0; transition: all 0.3s ease; position: relative; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #d4af37, #ffd700, #d4af37); }
+        .card:hover { border-color: #555; background: #1f1f1f; }
+        .card h3 { color: #fff; font-weight: 300; font-size: 1.8rem; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 15px; }
+        .card h3::before { content: ''; width: 30px; height: 1px; background: #d4af37; }
+
+        .upload-section { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+
+        .file-input-wrapper { position: relative; flex: 1; min-width: 300px; }
+        .file-input-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2; }
+        .file-input-display {
+            display: flex; align-items: center; padding: 16px 20px; border: 1px solid #444; background: #111; color: #ccc; font-size: 1rem; transition: all 0.3s ease; position: relative; z-index: 1; pointer-events: none;
+        }
+        .file-input-display:hover { border-color: #d4af37; background: #1a1a1a; }
+        .file-input-display::after { content: "Seleziona File"; margin-left: auto; color: #d4af37; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; }
+        .file-input-display.has-file::after { content: "File Selezionato"; color: #00b894; }
+
+        button {
+            background: transparent; color: #fff; border: 2px solid #d4af37; padding: 18px 40px; cursor: pointer; font-size: 1rem; font-weight: 400; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px; font-family: 'Roboto', sans-serif;
+        }
+        button:hover { background: #d4af37; color: #000; }
+        button:active { transform: scale(0.98); }
+
+        .flash-messages { margin-top: 2rem; }
+        .flash { background: #2d2d2d; color: #d4af37; padding: 1.5rem 2rem; margin-bottom: 1rem; border-left: 3px solid #d4af37; font-weight: 400; animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .empty-state { text-align: center; padding: 4rem 2rem; color: #666; font-style: italic; }
+        .empty-state::before { content: "📊"; display: block; font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+
+        .luxury-accent { position: fixed; top: 0; right: 0; width: 200px; height: 200px; background: radial-gradient(circle, rgba(212, 175, 55, 0.03) 0%, transparent 70%); pointer-events: none; }
+
+        /* Storico predizioni */
+        .predictions-timeline { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; position: relative; padding-left: 2rem; }
+        .predictions-timeline::before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, #d4af37, transparent); }
+        .prediction-entry { display: flex; align-items: flex-start; gap: 1rem; position: relative; }
+        .prediction-icon { background: #111; border: 2px solid #d4af37; color: #d4af37; width: 40px; height: 40px; min-width: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 0 10px rgba(212,175,55,0.2); }
+        .prediction-body { background: #111; padding: 1rem 1.5rem; border-radius: 8px; border: 1px solid #333; flex: 1; transition: all 0.3s ease; }
+        .prediction-body:hover { background: #1a1a1a; border-color: #444; }
+        .prediction-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: .5rem; }
+        .prediction-data { color: #fff; font-weight: 400; font-size: 1rem; }
+        .prediction-result { background: #d4af37; color: #000; font-weight: 600; padding: 4px 10px; border-radius: 20px; font-size: 0.9rem; text-transform: uppercase; }
+        .prediction-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: #888; }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 1rem; }
+            .logout-container { position: static; text-align: center; margin-top: 1rem; }
+            h2 { font-size: 2.2rem; }
+            .card { padding: 2rem 1.5rem; margin: 1.5rem 0; }
+            .upload-section { flex-direction: column; gap: 1.5rem; }
+            .file-input-wrapper { min-width: auto; }
+            button { width: 100%; }
+        }
+
+    </style>
 </head>
 <body>
-    <h2>Benvenuto Admin {{ current_user.username }}</h2>
-    <p><a href="{{ url_for('auth.logout') }}">Logout</a></p>
+    <div class="luxury-accent"></div>
 
-    <h3>Carica nuovo dataset</h3>
-    <form method="POST" action="{{ url_for('routes.upload_dataset') }}" enctype="multipart/form-data">
-        <input type="file" name="dataset" required>
-        <button type="submit">Carica</button>
-    </form>
+    <div class="header">
+        <div class="logout-container">
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
+        </div>
+        <div class="container">
+            <h2>Benvenuto Admin {{ current_user.username }}</h2>
+            <div class="subtitle">Pannello Amministrazione</div>
+        </div>
+    </div>
 
-    <h3>Storico predizioni</h3>
-    <ul>
-        {% for p in predictions %}
-            <li>{{ p.input_data }} → {{ p.prediction }} ({{ p.timestamp }}) [User ID: {{ p.user_id }}]</li>
-        {% endfor %}
-    </ul>
+    <div class="main-content">
+        <div class="container">
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <ul>
-            {% for category, message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
+            <!-- Upload dataset -->
+            <div class="card">
+                <h3>📁 Carica Nuovo Dataset</h3>
+                <form method="POST" action="{{ url_for('routes.upload_dataset') }}" enctype="multipart/form-data">
+                    <div class="upload-section">
+                        <div class="file-input-wrapper">
+                            <input type="file" name="dataset" required id="dataset-file">
+                            <div class="file-input-display" id="file-display">
+                                <span id="file-name">Nessun file selezionato</span>
+                            </div>
+                        </div>
+                        <button type="submit">Carica Dataset</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Storico predizioni -->
+            <div class="card">
+                <h3>📈 Storico Predizioni</h3>
+                <div class="predictions-timeline">
+                    {% for p in predictions %}
+                        <div class="prediction-entry">
+                            <div class="prediction-icon">🔮</div>
+                            <div class="prediction-body">
+                                <div class="prediction-top">
+                                    <span class="prediction-data">{{ p.input_data }}</span>
+                                    <span class="prediction-result">{{ p.prediction }}</span>
+                                </div>
+                                <div class="prediction-meta">
+                                    <span class="prediction-timestamp">{{ p.timestamp.strftime('%d/%m/%Y %H:%M:%S') }}</span>
+                                    <span class="prediction-user">User ID: {{ p.user_id }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            Nessuna predizione disponibile.<br>
+                            Le predizioni degli utenti appariranno qui.
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+
+    <script>
+        // Mostra il nome del file selezionato
+        document.getElementById('dataset-file').addEventListener('change', function(e) {
+            const fileDisplay = document.getElementById('file-display');
+            const fileName = document.getElementById('file-name');
+            if (e.target.files.length > 0) {
+                fileName.textContent = e.target.files[0].name;
+                fileDisplay.classList.add('has-file');
+            } else {
+                fileName.textContent = 'Nessun file selezionato';
+                fileDisplay.classList.remove('has-file');
+            }
+        });
+    </script>
 </body>
 </html>

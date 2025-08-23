@@ -1,38 +1,383 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
-    <title>Dashboard</title>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap');
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: #0a0a0a;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    color: #fff;
+    line-height: 1.6;
+}
+
+.header {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    padding: 2rem 0;
+    border-bottom: 1px solid #333;
+}
+
+.container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h2 {
+    color: #fff;
+    font-weight: 300;
+    font-size: 2.5rem;
+    margin: 0;
+    text-align: center;
+}
+
+.subtitle {
+    text-align: center;
+    color: #888;
+    font-weight: 300;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.logout-container {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+}
+
+a {
+    color: #ccc;
+    text-decoration: none;
+    font-weight: 400;
+    padding: 12px 24px;
+    border: 1px solid #444;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+}
+
+a:hover {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+}
+
+.main-content {
+    padding: 3rem 0;
+    width: 100%;
+}
+
+/* CARD GENERALE */
+.card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    padding: 2rem;
+    margin: 2rem 0;
+    position: relative;
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.card h3 {
+    color: #fff;
+    font-weight: 300;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* FORM */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-group label {
+    display: block;
+    color: #ccc;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+select {
+    width: 100%;
+    padding: 12px 10px;
+    border: none;
+    border-bottom: 1px solid #444;
+    background: transparent;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+select:focus { outline: none; border-bottom-color: #ffd700; }
+
+select option { background: #1a1a1a; color: #fff; padding: 8px; }
+
+/* BOTTONE */
+button {
+    background: #ffd700;
+    color: #000;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    padding: 12px 30px;
+    margin: 0 auto;
+    display: block;
+}
+
+button:hover { background: #e0b800; }
+
+/* PREDIZIONE */
+#latestPrediction {
+    display: none;
+    background: #1a1a1a;
+    padding: 1.5rem 2rem;
+    border-radius: 10px;
+    text-align: center;
+    border-left: 5px solid #00b894;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+#latestPrediction h3 { 
+    color: #00b894; 
+    margin-bottom: 0.5rem; 
+}
+
+#latestPrediction strong { 
+    font-size: 1.3rem; 
+    color: #ffd700; 
+}
+
+/* STORICO */
+.prediction-item {
+    background: #1b1b1b;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    border-left: 5px solid #ffd700;
+    border-radius: 6px;
+}
+
+.prediction-item strong {
+    color: #fff;
+    display: block;
+    margin-bottom: 0.5rem;
+    word-break: break-word;
+}
+
+.prediction-result {
+    color: #00b894;
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: block;
+}
+
+.empty-state { 
+    text-align: center; 
+    padding: 3rem 1rem; 
+    color: #666; 
+    font-style: italic; 
+}
+
+@media(max-width:768px) {
+    .form-grid { grid-template-columns:1fr; gap:1rem; }
+    button { width: 100%; }
+}
+</style>
 </head>
 <body>
-    <h2>Benvenuto {{ current_user.username }}</h2>
-    <p><a href="{{ url_for('auth.logout') }}">Logout</a></p>
 
-    <h3>Effettua una predizione</h3>
-    <form method="POST" action="{{ url_for('routes.predict') }}">
-        <input name="buying" placeholder="buying">
-        <input name="maint" placeholder="maint">
-        <input name="doors" placeholder="doors">
-        <input name="persons" placeholder="persons">
-        <input name="lug_boot" placeholder="lug_boot">
-        <input name="safety" placeholder="safety">
-        <button type="submit">Predici</button>
-    </form>
+<div class="header">
+    <div class="logout-container">
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+    </div>
+    <div class="container">
+        <h2>Benvenuto {{ current_user.username }}</h2>
+        <div class="subtitle">Dashboard Esecutiva</div>
+    </div>
+</div>
 
-    <h3>Le tue predizioni:</h3>
-    <ul>
-        {% for p in predictions %}
-            <li>{{ p.input_data }} → {{ p.prediction }} ({{ p.timestamp }})</li>
-        {% endfor %}
-    </ul>
+<div class="main-content">
+<div class="container">
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <ul>
-            {% for category, message in messages %}
-                <li>{{ message }}</li>
+    <!-- FORM PREDIZIONE -->
+    <div class="card">
+        <h3>🔮 Sistema di Valutazione Auto</h3>
+        <form id="predictionForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Prezzo di Acquisto</label>
+                    <select name="buying" required>
+                        <option value="">Seleziona prezzo</option>
+                        <option value="vhigh">Molto Alto</option>
+                        <option value="high">Alto</option>
+                        <option value="med">Medio</option>
+                        <option value="low">Basso</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Costo Manutenzione</label>
+                    <select name="maint" required>
+                        <option value="">Seleziona costo</option>
+                        <option value="vhigh">Molto Alto</option>
+                        <option value="high">Alto</option>
+                        <option value="med">Medio</option>
+                        <option value="low">Basso</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Numero Porte</label>
+                    <select name="doors" required>
+                        <option value="">Seleziona porte</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5more">5 o più</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Capacità Persone</label>
+                    <select name="persons" required>
+                        <option value="">Seleziona persone</option>
+                        <option value="2">2</option>
+                        <option value="4">4</option>
+                        <option value="more">Più di 4</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Spazio Bagagliaio</label>
+                    <select name="lug_boot" required>
+                        <option value="">Seleziona bagagliaio</option>
+                        <option value="small">Piccolo</option>
+                        <option value="med">Medio</option>
+                        <option value="big">Grande</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Livello Sicurezza</label>
+                    <select name="safety" required>
+                        <option value="">Seleziona sicurezza</option>
+                        <option value="low">Basso</option>
+                        <option value="med">Medio</option>
+                        <option value="high">Alto</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit">Esegui Analisi</button>
+        </form>
+
+        <!-- BOX RISULTATO -->
+        <div id="latestPrediction">
+            <h3>🟢 Risultato Predizione</h3>
+            <p>Classe stimata: <strong id="latestResult"></strong></p>
+        </div>
+    </div>
+
+    <!-- STORICO -->
+    <div class="card">
+        <h3>📜 Storico Analisi</h3>
+        <ul id="historyList">
+            {% for p in predictions %}
+                <li class="prediction-item">
+                    <strong>{{ p.input_data }}</strong>
+                    <span class="prediction-result">{{ p.prediction }}</span>
+                    <small>{{ p.timestamp.strftime('%d/%m/%Y %H:%M:%S') }}</small>
+                </li>
+            {% else %}
+                <div class="empty-state">
+                    Nessuna valutazione disponibile.<br>Inizia la tua prima analisi.
+                </div>
             {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
+        </ul>
+    </div>
+
+</div>
+</div>
+
+<script>
+const form = document.getElementById("predictionForm");
+const historyList = document.getElementById("historyList");
+const latestDiv = document.getElementById("latestPrediction");
+const latestResult = document.getElementById("latestResult");
+
+form.addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    try {
+        const response = await fetch("{{ url_for('routes.predict') }}", {
+            method: "POST",
+            body: formData
+        });
+        const result = await response.json();
+
+        if(result.error) {
+            alert(result.error);
+            return;
+        }
+
+        // Mostra la predizione appena fatta
+        latestResult.textContent = result.result;
+        latestDiv.style.display = "block";
+        latestDiv.scrollIntoView({ behavior: "smooth" });
+
+        // Rimuove eventuale empty-state dallo storico
+        const emptyState = document.querySelector(".empty-state");
+        if(emptyState) emptyState.remove();
+
+        // Timestamp corrente
+        const now = new Date();
+        const timestamp = now.toLocaleString("it-IT", {
+            day: "2-digit", month: "2-digit", year: "numeric",
+            hour: "2-digit", minute: "2-digit", second: "2-digit"
+        });
+
+        // Aggiunge la predizione nello storico
+        const li = document.createElement("li");
+        li.className = "prediction-item";
+        li.innerHTML = `
+            <strong>${Array.from(formData.values()).join(", ")}</strong>
+            <span class="prediction-result">${result.result}</span>
+            <small>${timestamp}</small>
+        `;
+        historyList.prepend(li);
+
+        // Reset form
+        form.reset();
+
+    } catch(err) {
+        console.error(err);
+        alert("Errore nella richiesta al server.");
+    }
+});
+</script>
 </body>
 </html>

@@ -1,10 +1,202 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
-    <title>Home</title>
+    <meta charset="UTF-8">
+    <title>Home - Sistema di Valutazione Auto</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap');
+        * { box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background: #0a0a0a; margin: 0; padding: 0; color: #fff; line-height: 1.6; }
+
+        /* Hero Section */
+        .luxury-accent { position: fixed; top: 0; right: 0; width: 200px; height: 200px; background: radial-gradient(circle, rgba(212, 175, 55, 0.03) 0%, transparent 70%); pointer-events: none; z-index: 0; }
+        .hero-section { background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 3rem 0; border-bottom: 1px solid #333; text-align: center; position: relative; overflow: hidden; }
+        .hero-section::before { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 50%); pointer-events:none; }
+        .hero-section h1 { font-size: 3.5rem; font-weight: 300; margin:0 0 1rem 0; letter-spacing: -1px; color:#fff; }
+        .hero-subtitle { color:#d4af37; font-weight:300; font-size:1.3rem; margin-bottom:2rem; text-transform:uppercase; letter-spacing:3px; }
+        .hero-description { color:#ccc; font-size:1.1rem; max-width:800px; margin:0 auto 3rem auto; line-height:1.8; }
+        .auth-links { display:flex; justify-content:center; gap:2rem; margin-bottom:2rem; }
+        .auth-link { color:#ccc; text-decoration:none; font-weight:400; padding:15px 30px; border:1px solid #444; transition: all 0.3s ease; text-transform:uppercase; letter-spacing:1px; font-size:0.9rem; }
+        .auth-link:hover { background:#fff; color:#000; border-color:#fff; }
+        .auth-link.primary { border-color:#d4af37; color:#d4af37; }
+        .auth-link.primary:hover { background:#d4af37; color:#000; }
+
+        /* Main Container */
+        .container { max-width:1200px; margin:0 auto; padding:2rem; position:relative; z-index:1; }
+
+        /* Features Section */
+        .features-section { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:2rem; margin-bottom:4rem; }
+        .feature-card { background:#1a1a1a; border:1px solid #333; padding:2.5rem; text-align:center; transition: all 0.3s ease; position:relative; }
+        .feature-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, transparent, #d4af37, transparent); }
+        .feature-card:hover { transform: translateY(-5px); border-color:#555; background:#1f1f1f; }
+        .feature-icon { font-size:3rem; margin-bottom:1.5rem; display:block; }
+        .feature-title { color:#fff; font-size:1.3rem; font-weight:400; margin-bottom:1rem; text-transform:uppercase; letter-spacing:1px; }
+        .feature-description { color:#ccc; line-height:1.6; }
+
+        /* Card / Form Section */
+        .card { background:#1a1a1a; border:1px solid #333; padding:3rem; margin:2rem 0; transition: all 0.3s ease; position:relative; }
+        .card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg,#d4af37,#ffd700,#d4af37); }
+        .card h2 { color:#fff; font-weight:300; font-size:2rem; margin-bottom:2rem; text-transform:uppercase; letter-spacing:1px; display:flex; align-items:center; gap:15px; }
+        .card h2::before { content:''; width:30px; height:1px; background:#d4af37; }
+
+        /* Form */
+        .form-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:2rem; margin-bottom:3rem; }
+        .form-group { position:relative; }
+        .form-group label { display:block; color:#ccc; font-weight:400; margin-bottom:0.8rem; font-size:0.9rem; text-transform:uppercase; letter-spacing:1px; }
+        select { width:100%;; padding:16px 0; border:none; border-bottom:1px solid #444; background:transparent; color:#fff; font-size:1.1rem; appearance:none; background-image:url('data:image/svg+xml;utf8,<svg fill="%23cccccc" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); background-repeat:no-repeat; background-position:right 0px center; background-size:24px; padding-right:30px; cursor:pointer; }
+        select option {background: #1a1a1a; color: #ffffff; padding: 10px;
+        }
+        .field-description { color:#666; font-size:0.8rem; margin-top:0.3rem; font-style:italic; }
+        button { background:transparent; color:#fff; border:2px solid #d4af37; padding:18px 40px; cursor:pointer; font-size:1rem; display:block; margin:0 auto; text-transform:uppercase; letter-spacing:2px; transition:all 0.3s ease; }
+        button:hover { background:#d4af37; color:#000; }
+        .result-card { background:#666; border-left:3px solid #d4af37; padding:2rem; margin-top:2rem; display:none; }
+        .result-card.show { display:block; }
+        .result-title { color:#d4af37; font-size:1.3rem; font-weight:500; margin-bottom:1rem; text-transform:uppercase; }
+        .result-value { color:#fff; font-size:1.5rem; margin-bottom:1rem; }
+        .result-description { color:#ccc; line-height:1.6; }
+
+        @media (max-width:768px) {
+            .form-grid { grid-template-columns:1fr; gap:1.5rem; }
+        }
+    </style>
 </head>
 <body>
-    <h1>Benvenuto!</h1>
-    <p><a href="{{ url_for('auth.login') }}">Login</a> | <a href="{{ url_for('auth.register') }}">Registrati</a></p>
+<div class="luxury-accent"></div>
+
+<div class="hero-section">
+    <div class="container">
+        <h1>Sistema di Valutazione Auto</h1>
+        <div class="hero-subtitle">Intelligenza Artificiale Automotive</div>
+        <div class="hero-description">
+            Utilizza algoritmi di machine learning avanzati per valutare l'accettabilità di un veicolo basandosi su caratteristiche chiave come prezzo, manutenzione, sicurezza e specifiche tecniche.
+        </div>
+        <div class="auth-links">
+            <a href="{{ url_for('auth.login') }}" class="auth-link primary">Accedi</a>
+            <a href="{{ url_for('auth.register') }}" class="auth-link">Registrati</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="features-section">
+        <div class="feature-card">
+            <span class="feature-icon">🤖</span>
+            <div class="feature-title">AI Avanzata</div>
+            <div class="feature-description">Algoritmi addestrati su dataset specifici per predizioni accurate.</div>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">⚡</span>
+            <div class="feature-title">Analisi Istantanea</div>
+            <div class="feature-description">Risultati immediati basati su parametri multipli per valutazioni complete.</div>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">🔒</span>
+            <div class="feature-title">Sicuro & Affidabile</div>
+            <div class="feature-description">Mantieni lo storico delle valutazioni registrandoti.</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🚗 Prova il Sistema</h2>
+        <form id="predictionForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Prezzo di Acquisto</label>
+                    <select name="buying" required>
+                        <option value="">Seleziona prezzo</option>
+                        <option value="vhigh">Molto Alto</option>
+                        <option value="high">Alto</option>
+                        <option value="med">Medio</option>
+                        <option value="low">Basso</option>
+                    </select>
+                    <div class="field-description">Prezzo di listino del veicolo</div>
+                </div>
+                <div class="form-group">
+                    <label>Costo Manutenzione</label>
+                    <select name="maint" required>
+                        <option value="">Seleziona costo</option>
+                        <option value="vhigh">Molto Alto</option>
+                        <option value="high">Alto</option>
+                        <option value="med">Medio</option>
+                        <option value="low">Basso</option>
+                    </select>
+                    <div class="field-description">Costo previsto per la manutenzione</div>
+                </div>
+                <div class="form-group">
+                    <label>Numero Porte</label>
+                    <select name="doors" required>
+                        <option value="">Seleziona porte</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5more">5 o più</option>
+                    </select>
+                    <div class="field-description">Configurazione porte</div>
+                </div>
+                <div class="form-group">
+                    <label>Capacità Persone</label>
+                    <select name="persons" required>
+                        <option value="">Seleziona persone</option>
+                        <option value="2">2</option>
+                        <option value="4">4</option>
+                        <option value="more">Più di 4</option>
+                    </select>
+                    <div class="field-description">Numero massimo passeggeri</div>
+                </div>
+                <div class="form-group">
+                    <label>Spazio Bagagliaio</label>
+                    <select name="lug_boot" required>
+                        <option value="">Seleziona bagagliaio</option>
+                        <option value="small">Piccolo</option>
+                        <option value="med">Medio</option>
+                        <option value="big">Grande</option>
+                    </select>
+                    <div class="field-description">Capacità del vano bagagli</div>
+                </div>
+                <div class="form-group">
+                    <label>Livello Sicurezza</label>
+                    <select name="safety" required>
+                        <option value="">Seleziona sicurezza</option>
+                        <option value="low">Basso</option>
+                        <option value="med">Medio</option>
+                        <option value="high">Alto</option>
+                    </select>
+                    <div class="field-description">Rating stimato di sicurezza</div>
+                </div>
+            </div>
+            <button type="submit">Analizza Veicolo</button>
+        </form>
+
+        <div id="resultCard" class="result-card">
+            <div class="result-title">Risultato Valutazione</div>
+            <div id="resultValue" class="result-value"></div>
+            <div id="resultDescription" class="result-description"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Hai bisogno di più funzionalità?</h2>
+        <p>Registrati per salvare lo storico delle predizioni e accedere a funzionalità avanzate.</p>
+        <div style="text-align:center; margin-top:1.5rem;">
+        <a href="{{ url_for('auth.register') }}" class="auth-link primary">Registrati</a>
+</div>
+
+<script>
+document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+
+    const response = await fetch('{{ url_for("routes.predict") }}', {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    });
+    const data = await response.json();
+
+    document.getElementById('resultValue').textContent = data.result;
+    document.getElementById('resultDescription').textContent = data.description;
+    document.getElementById('resultCard').classList.add('show');
+});
+</script>
 </body>
 </html>

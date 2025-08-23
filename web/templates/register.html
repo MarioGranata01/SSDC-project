@@ -1,24 +1,438 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
-    <title>Registrazione</title>
+    <meta charset="UTF-8">
+    <title>Registrazione - Sistema di Valutazione Auto</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #0a0a0a;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            color: #ffffff;
+            line-height: 1.6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .register-container {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .register-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #d4af37, #ffd700, #d4af37);
+        }
+        
+        .register-container:hover {
+            border-color: #555;
+            background: #1f1f1f;
+        }
+        
+        .register-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .register-title {
+            color: #ffffff;
+            font-weight: 300;
+            font-size: 2.5rem;
+            margin: 0 0 1rem 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .register-subtitle {
+            color: #d4af37;
+            font-weight: 300;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+        }
+        
+        .register-description {
+            color: #cccccc;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        .register-form {
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #cccccc;
+            font-weight: 400;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 18px 0;
+            border: none;
+            border-bottom: 1px solid #444;
+            background: transparent;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-family: 'Roboto', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-bottom-color: #d4af37;
+        }
+        
+        input[type="text"]::placeholder,
+        input[type="password"]::placeholder {
+            color: #666;
+            font-style: normal;
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            line-height: 1;
+        }
+        
+        input:focus + .input-icon {
+            color: #d4af37;
+        }
+        
+        .password-strength {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+        
+        .password-strength.weak {
+            color: #e74c3c;
+        }
+        
+        .password-strength.medium {
+            color: #f39c12;
+        }
+        
+        .password-strength.strong {
+            color: #00b894;
+        }
+        
+        button {
+            width: 100%;
+            background: transparent;
+            color: #ffffff;
+            border: 2px solid #d4af37;
+            padding: 18px 40px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Roboto', sans-serif;
+            margin-bottom: 2rem;
+        }
+        
+        button:hover {
+            background: #d4af37;
+            color: #000000;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        .login-link {
+            text-align: center;
+            color: #cccccc;
+            font-size: 0.95rem;
+        }
+        
+        .login-link a {
+            color: #d4af37;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid transparent;
+        }
+        
+        .login-link a:hover {
+            border-bottom-color: #d4af37;
+        }
+        
+        .flash-messages {
+            margin-bottom: 2rem;
+        }
+        
+        .flash {
+            background: #2d2d2d;
+            color: #e74c3c;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid #e74c3c;
+            font-weight: 400;
+            font-size: 0.9rem;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .flash.success {
+            color: #00b894;
+            border-left-color: #00b894;
+        }
+        
+        .flash.info {
+            color: #d4af37;
+            border-left-color: #d4af37;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .back-link {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            color: #cccccc;
+            text-decoration: none;
+            font-weight: 400;
+            padding: 12px 24px;
+            border: 1px solid #444;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            z-index: 10;
+        }
+        
+        .back-link:hover {
+            background: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+        }
+        
+        .benefits-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+        }
+        
+        .benefits-title {
+            color: #d4af37;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .benefits-list li {
+            color: #cccccc;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .benefits-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #d4af37;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .register-container {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+            
+            .register-title {
+                font-size: 2rem;
+            }
+            
+            .back-link {
+                position: static;
+                display: block;
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+        }
+        
+        .luxury-accent {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.02) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .luxury-accent-2 {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.02) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
 </head>
 <body>
-    <h2>Registrati</h2>
-    <form method="POST">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Crea Account</button>
-    </form>
-    <p>Hai già un account? <a href="{{ url_for('auth.login') }}">Login</a></p>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <ul>
-            {% for category, message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
+    <div class="luxury-accent"></div>
+    <div class="luxury-accent-2"></div>
+    
+    <a href="/" class="back-link">← Home</a>
+    
+    <div class="register-container">
+        <div class="register-header">
+            <h2 class="register-title">Registrazione</h2>
+            <div class="register-subtitle">Crea Account</div>
+            <div class="register-description">
+                Unisciti alla piattaforma professionale per la valutazione automotive
+            </div>
+        </div>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST" class="register-form">
+            <div class="form-group">
+                <label for="username">Nome Utente</label>
+                <input type="text" name="username" id="username" placeholder="Scegli un username unico" required>
+                <span class="input-icon">👤</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" placeholder="Crea una password sicura" required>
+                <span class="input-icon lock-icon">🔒</span>
+                <div id="password-strength" class="password-strength">
+                    Inserisci una password di almeno 6 caratteri
+                </div>
+            </div>
+            
+            <button type="submit">Crea Account</button>
+        </form>
+        
+        <div class="login-link">
+            Hai già un account? <a href="{{ url_for('auth.login') }}">Accedi</a>
+        </div>
+        
+        <div class="benefits-section">
+            <div class="benefits-title">Vantaggi dell'Account</div>
+            <ul class="benefits-list">
+                <li>Storico completo delle valutazioni</li>
+                <li>Accesso a funzionalità avanzate</li>
+                <li>Dashboard personalizzata</li>
+                <li>Analisi dettagliate dei risultati</li>
             </ul>
-        {% endif %}
-    {% endwith %}
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('password').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const strengthIndicator = document.getElementById('password-strength');
+            
+            if (password.length === 0) {
+                strengthIndicator.textContent = 'Inserisci una password di almeno 6 caratteri';
+                strengthIndicator.className = 'password-strength';
+            } else if (password.length < 6) {
+                strengthIndicator.textContent = 'Password troppo corta';
+                strengthIndicator.className = 'password-strength weak';
+            } else if (password.length < 8) {
+                strengthIndicator.textContent = 'Password media';
+                strengthIndicator.className = 'password-strength medium';
+            } else {
+                strengthIndicator.textContent = 'Password forte';
+                strengthIndicator.className = 'password-strength strong';
+            }
+        });
+    </script>
 </body>
 </html>
