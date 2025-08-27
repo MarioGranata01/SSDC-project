@@ -26,11 +26,8 @@ for filename in os.listdir(RAW_DIR):
             df[col] = df[col].astype('category')
             encoders[col] = dict(zip(df[col].cat.categories, range(len(df[col].cat.categories))))
             df[col] = df[col].cat.codes
-
-        # salva CSV processato senza header e senza indice
+        # Salva
         df.to_csv(os.path.join(PROCESSED_DIR, filename), index=False, header=False)
-
-        # salva encoders
         joblib.dump(encoders, os.path.join(ENCODERS_DIR, f"{filename}_encoders.joblib"))
 
         print(f"Processed {filename}")

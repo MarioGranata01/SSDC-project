@@ -70,7 +70,6 @@
 
         .luxury-accent { position: fixed; top: 0; right: 0; width: 200px; height: 200px; background: radial-gradient(circle, rgba(212, 175, 55, 0.03) 0%, transparent 70%); pointer-events: none; }
 
-        /* Storico predizioni */
         .predictions-timeline { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; position: relative; padding-left: 2rem; }
         .predictions-timeline::before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, #d4af37, transparent); }
         .prediction-entry { display: flex; align-items: flex-start; gap: 1rem; position: relative; }
@@ -110,7 +109,6 @@
     <div class="main-content">
         <div class="container">
 
-            <!-- Upload dataset -->
             <div class="card">
                 <h3>📁 Carica Nuovo Dataset</h3>
                 <form method="POST" action="{{ url_for('routes.upload_dataset') }}" enctype="multipart/form-data">
@@ -126,7 +124,6 @@
                 </form>
             </div>
 
-            <!-- Storico predizioni -->
             <div class="card">
                 <h3>📈 Storico Predizioni</h3>
                 <div class="predictions-timeline">
@@ -153,7 +150,6 @@
                 </div>
             </div>
 
-            <!-- Flash messages -->
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     <div class="flash-messages">
@@ -167,7 +163,6 @@
     </div>
 
     <script>
-        // Mostra il nome del file selezionato
         document.getElementById('dataset-file').addEventListener('change', function(e) {
             const fileDisplay = document.getElementById('file-display');
             const fileName = document.getElementById('file-name');

@@ -15,7 +15,7 @@ def train():
         if filename.endswith(".csv") or filename.endswith(".data"):
             filepath = os.path.join(PROCESSED_DIR, filename)
             print(f"Trovato file: {filepath}")
-            df = pd.read_csv(filepath, header=None)  # <-- senza header
+            df = pd.read_csv(filepath, header=None)
             dfs.append(df)
     
     if not dfs:
@@ -28,10 +28,8 @@ def train():
     X = data.iloc[:, :-1]
     y = data.iloc[:, -1]
 
-    # Split train/test
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Modello Random Forest
     model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)
 

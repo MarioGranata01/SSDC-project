@@ -5,14 +5,12 @@ from werkzeug.security import generate_password_hash
 
 db = SQLAlchemy()
 
-# Tabella utenti
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)  # password hashata
-    role = db.Column(db.String(10), nullable=False, default="user")  # "admin" o "user"
+    password = db.Column(db.String(200), nullable=False)  
+    role = db.Column(db.String(10), nullable=False, default="user")  
 
-# Tabella predizioni fatte dagli utenti
 class Prediction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     input_data = db.Column(db.String(200), nullable=False)
